@@ -1,0 +1,26 @@
+<div class="w-full bg-white shadow">
+  <header class="flex justify-between items-center p-4">
+    <div class="flex items-center">
+      <button id="menu-toggle">
+        <!-- <i class="fa fa-bars" aria-hidden="true"></i> -->
+        <i class="fas fa-user-circle"></i>
+      </button>
+      <a href="..." class="ml-3 text-lg font-semibold text-gray-900">
+        Clube Car
+      </a>
+    </div>
+
+    <div>
+      <clr-dropdown>
+        <button class="p-2 rounded-full text-gray-700 hover:bg-gray-200" clrDropdownTrigger>
+          <i class="fa fa-user-circle text-xl"></i>
+        </button>
+        <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+          <a href="..." clrDropdownItem>About</a>
+          <a href="..." clrDropdownItem>Preferences</a>
+          <a href="..." clrDropdownItem>Log out</a>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+    </div>
+  </header>
+</div>

@@ -1,0 +1,46 @@
+/* Estilos personalizados para o DataGrid */
+.pagination {
+  margin-top: 20px;
+}
+
+.pagination li {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.pagination li a {
+  cursor: pointer;
+}
+
+.btn-xs {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}
+
+.table-responsive {
+  overflow-x: auto;  // Permite rolagem horizontal
+  max-width: 100%;
+  margin-top: 20px;
+}
+
+table {
+  width: max-content; // Expande conforme necessário
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.sticky-left {
+  position: sticky;
+  left: 0;
+  z-index: 100;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-right {
+  position: sticky;
+  right: 0;
+  z-index: 101;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}

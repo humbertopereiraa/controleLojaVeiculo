@@ -1,0 +1,28 @@
+.notice {
+  border-left: 6px solid #7f7f84;
+}
+
+.notice-success {
+  border-left-color: #80D651;
+}
+
+.notice-info {
+  border-left-color: #45ABCD;
+}
+
+.notice-warning {
+  border-left-color: #FEAF20;
+}
+
+.footer {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: calc(var(--cui-modal-padding) - var(--cui-modal-footer-gap)* 0.5);
+  background-color: var(--cui-modal-footer-bg);
+  border-top: var(--cui-modal-footer-border-width) solid var(--cui-modal-footer-border-color);
+  border-bottom-right-radius: var(--cui-modal-inner-border-radius);
+  border-bottom-left-radius: var(--cui-modal-inner-border-radius);
+}

@@ -1,0 +1,102 @@
+<div *ngIf="isOpen" class="modal fade show d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header justify-content-between">
+        <h5 class="modal-title"> {{ isForm ? 'Nova Tarefa' : 'Tarefas' }} </h5>
+        <div class="d-flex">
+          <button *ngIf="!isForm" class="btn btn-info btn-sm me-3" (click)="exibirForm()">
+            <i class="fas fa-plus"></i> Adicionar
+          </button>
+          <button type="button" class="btn btn-light close" data-dismiss="modal" aria-label="Close"
+            (click)="fecharPopup()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body" style="max-height: 400px;min-height: 400px;">
+        <ng-container [ngSwitch]="isForm">
+          <ng-container *ngSwitchCase="false">
+            <ng-container *ngTemplateOutlet="listaTarefas"></ng-container>
+          </ng-container>
+          <ng-container *ngSwitchCase="true">
+            <ng-container *ngTemplateOutlet="cadastroTarefas"></ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <div class="footer position-absolute bottom-0 w-100" *ngIf="isForm">
+        <button type="button" class="btn btn-light me-2" (click)="isForm = false">Cancelar</button>
+        <button type="submit" class="btn btn-success" (click)="onSubmit()">Salvar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--Template de Lista de Tarefas-->
+<ng-template #listaTarefas>
+  <div class="card mb-1 notice"
+    [ngClass]="{'notice-info': tarefa.status_tarefa === 'PENDENTE', 'notice-warning' :  tarefa.status_tarefa === 'ATRASADA', 'notice-success': tarefa.status_tarefa === 'CONCLUIDA' }"
+    *ngFor="let tarefa of tarefas">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-10">
+          <h5 class="card-title"> {{ tarefa.nome }} </h5>
+          <p>Prazo: {{ tarefa.data_prazo | date: 'dd/MM/yyyy hh:mm' }}</p>
+        </div>
+        <div class="col-2 d-flex justify-content-center align-items-center">
+          <button class="btn btn-success btn-sm me-2" (click)="concluirTarefa(tarefa.id)"
+            *ngIf="tarefa.status_tarefa !== 'CONCLUIDA'">
+            <span title="Concluir Tarefa">
+              <i class="fas fa-check"></i>
+            </span>
+          </button>
+          <button class="btn btn-danger btn-sm" (click)="onOpenPopupConfimacao(tarefa)">
+            <span title="Deletar Tarefa">
+              <i class="fas fa-trash"></i>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #cadastroTarefas>
+  <form class="row g-3 w-100" [formGroup]="form">
+    <div class="col-md-12">
+      <label for="nome" class="form-label required">Nome:</label>
+      <input type="text" class="form-control" formControlName="nome" id="nome" required>
+      <div *ngIf="form.get('nome')?.invalid && (form.get('nome')?.touched || form.get('nome')?.dirty)"
+        class="text-danger">
+        <small *ngIf="form.get('nome')?.errors?.['required']">A nome é obrigatória.</small>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <label for="data_prazo">Prazo:</label>
+      <input id="data_prazo" class="form-control" [min]="minDate" type="datetime-local" formControlName="data_prazo" />
+      <div *ngIf="form.get('data_prazo')?.invalid && (form.get('data_prazo')?.touched || form.get('data_prazo')?.dirty)"
+        class="text-danger">
+        <small *ngIf="form.get('data_prazo')?.errors?.['required']">O Prazo é obrigatório.</small>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+
+<!-- Modal de Confirmação -->
+<div class="modal fade" [class.show]="isOpenPopupConfimacao" [style.display]="isOpenPopupConfimacao ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        Tem certeza que deseja remover este registro?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="isOpenPopupConfimacao = false">Não</button>
+        <button type="button" class="btn btn-danger" (click)="excluirTarefa()">Sim</button>
+      </div>
+    </div>
+  </div>
+</div>

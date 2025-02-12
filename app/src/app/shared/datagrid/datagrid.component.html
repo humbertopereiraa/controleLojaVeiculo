@@ -1,0 +1,133 @@
+<div class="container-fluid d-flex flex-column mt-2">
+  <!-- Linha de Pesquisa e Botão Adicionar -->
+  <div class="row align-items-center mb-3">
+    <div class="col-md-6" *ngIf="isInputSearch">
+      <div class="form-group">
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="globalSearch" placeholder="Pesquisar..." />
+      </div>
+    </div>
+    <div class="col-md-6 text-end" *ngIf="isCRUD">
+      <button class="btn btn-info btn-sm" (click)="this.add.emit()">
+        <i class="fas fa-plus"></i> Adicionar
+      </button>
+    </div>
+  </div>
+
+  <!-- DataGrid ocupando altura total disponível -->
+  <div class="flex-grow-1 d-flex flex-column">
+    <div class="table-responsive flex-grow-1">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th *ngIf="detailTemplate" class="sticky-left"></th> <!-- Ícone para expandir detalhes -->
+            <th *ngFor="let column of columns">
+              {{ column.header }}
+              <button class="btn btn-link p-0 ms-1" (click)="sortByColumn(column)">
+                <i class="fas" [ngClass]="getSortIcon(column)"></i>
+              </button>
+            </th>
+            <th class="sticky-right" *ngIf="isCRUD">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of paginatedData; let i = index">
+            <tr>
+              <!-- Botão para expandir detalhes -->
+              <td *ngIf="detailTemplate" class="text-center sticky-left">
+                <button class="btn btn-link p-0" (click)="toggleDetail(i)">
+                  <i class="fas"
+                    [ngClass]="{ 'fa-chevron-down': !expandedRows[i], 'fa-chevron-up': expandedRows[i] }"></i>
+                </button>
+              </td>
+
+              <!-- Colunas normais -->
+              <td *ngFor="let column of columns"
+                [ngStyle]="column.key === 'situacao' ? getCellStyle(item[column.key], column?.cores) : {}"
+                [ngClass]="{'text-center': column.tipo === 'booleano', 'text-end': column.tipo === 'number'}">
+                <ng-container *ngIf="column.tipo === 'booleano'; else normalTemplate">
+                  <ng-container *ngTemplateOutlet="booleanTemplate; context: { value: item[column.key] }">
+                  </ng-container>
+                </ng-container>
+
+                <ng-template #normalTemplate>
+                  {{ item[column.key] }}
+                </ng-template>
+              </td>
+
+              <!-- Ações -->
+              <td class="sticky-right minWidth d-flex justify-content-between"
+                [ngStyle]="isButtonTask ? {'min-width': '125px'} : {'min-width': '85px'}" *ngIf="isCRUD">
+                <button (click)="this.edit.emit(item); $event.stopPropagation()" class="btn btn-sm btn-link">
+                  <span title="Editar">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                </button>
+                <button (click)="abrirModalConfimacao(item); $event.stopPropagation()" class="btn btn-sm btn-link">
+                  <span title="Deletar">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                </button>
+                <button (click)="tarefa.emit(item.id); $event.stopPropagation()" class="btn btn-sm btn-link" *ngIf="isButtonTask">
+                  <span title="Tarefas">
+                    <i class="far fa-calendar-check"></i>
+                  </span>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Linha para os detalhes -->
+            <tr *ngIf="expandedRows[i] && detailTemplate" style="max-height: 30px;">
+              <td [attr.colspan]="columns.length + (detailTemplate ? 2 : 1)">
+                <ng-container *ngTemplateOutlet="detailTemplate; context: { $implicit: item }"></ng-container>
+              </td>
+            </tr>
+
+            <ng-template #booleanTemplate let-value="value">
+              <span class="text-success" *ngIf="value">
+                <i class="fas fa-check"></i> <!-- Ícone de check -->
+              </span>
+              <span class="text-danger" *ngIf="!value">
+                <i class="fas fa-times"></i> <!-- Ícone de X -->
+              </span>
+            </ng-template>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Informações e Paginação -->
+    <div class="d-flex justify-content-between align-items-center mt-auto">
+      <div class="text-muted">
+        Mostrando {{ paginatedData.length }} de {{ dataSource.length }} registros
+      </div>
+      <nav>
+        <ul class="pagination justify-content-end">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="changePage(currentPage - 1)">&laquo;</a>
+          </li>
+          <li *ngFor="let page of getPages()" class="page-item" [class.active]="page === currentPage">
+            <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === getPages().length">
+            <a class="page-link" (click)="changePage(currentPage + 1)">&raquo;</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Confirmação -->
+<div class="modal fade" [class.show]="isOpenPopupConfimacao" [style.display]="isOpenPopupConfimacao ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        Tem certeza que deseja remover este registro?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="cancelarExclusao()">Não</button>
+        <button type="button" class="btn btn-danger" (click)="deletarRegistro()">Sim</button>
+      </div>
+    </div>
+  </div>
+</div>

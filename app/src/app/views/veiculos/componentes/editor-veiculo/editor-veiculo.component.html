@@ -1,0 +1,122 @@
+<div *ngIf="isOpen" class="modal fade show d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header justify-content-between">
+        <h5 class="modal-title">{{ veiculo ? 'Editar Veículo' : 'Adicionar Veículo' }}</h5>
+        <button type="button" class="btn btn-light close" data-dismiss="modal" aria-label="Close" (click)="fechar()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" [formGroup]="form">
+
+          <!-- Placa -->
+          <div class="col-md-6">
+            <label for="placa" class="form-label required">Placa:</label>
+            <input type="text" class="form-control" formControlName="placa" id="placa" required>
+            <div *ngIf="form.get('placa')?.invalid && (form.get('placa')?.touched || form.get('placa')?.dirty)"
+              class="text-danger">
+              <small *ngIf="form.get('placa')?.errors?.['required']">A placa é obrigatória.</small>
+              <small *ngIf="form.get('placa')?.errors?.['pattern']">Formato inválido. Use AAA-1234 ou AAA1B23.</small>
+            </div>
+          </div>
+
+          <!-- Renavam -->
+          <div class="col-md-6">
+            <label for="renavam" class="form-label required">Renavam:</label>
+            <input type="text" class="form-control" formControlName="renavam" id="renavam" maxlength="11" required>
+            <div *ngIf="form.get('renavam')?.invalid && (form.get('renavam')?.touched || form.get('renavam')?.dirty)"
+              class="text-danger">
+              <small *ngIf="form.get('renavam')?.errors?.['required']">O Renavam é obrigatório.</small>
+              <small *ngIf="form.get('renavam')?.errors?.['minlength']">O Renavam deve ter exatamente 11
+                caracteres.</small>
+              <small *ngIf="form.get('renavam')?.errors?.['maxlength']">O Renavam deve ter no máximo 11
+                caracteres.</small>
+            </div>
+          </div>
+
+          <!-- Marca -->
+          <div class="col-md-6">
+            <label for="marca" class="form-label required">Marca:</label>
+            <input type="text" class="form-control" formControlName="marca" id="marca" required>
+            <div *ngIf="form.get('marca')?.invalid && form.get('marca')?.touched" class="text-danger">
+              <small *ngIf="form.get('marca')?.errors?.['required']">A marca é obrigatória.</small>
+            </div>
+          </div>
+
+          <!-- Modelo -->
+          <div class="col-md-6">
+            <label for="modelo" class="form-label required">Modelo:</label>
+            <input type="text" class="form-control" formControlName="modelo" id="modelo" required>
+            <div *ngIf="form.get('modelo')?.invalid && form.get('modelo')?.touched" class="text-danger">
+              <small *ngIf="form.get('modelo')?.errors?.['required']">O modelo é obrigatório.</small>
+            </div>
+          </div>
+
+          <!-- Ano -->
+          <div class="col-md-6">
+            <label for="ano" class="form-label required">Ano:</label>
+            <input type="number" class="form-control" formControlName="ano" id="ano" required>
+            <div *ngIf="form.get('ano')?.invalid && form.get('ano')?.touched" class="text-danger">
+              <small *ngIf="form.get('ano')?.errors?.['required']">O ano é obrigatório.</small>
+              <small *ngIf="form.get('ano')?.errors?.['min']">Ano mínimo permitido: 1900.</small>
+              <small *ngIf="form.get('ano')?.errors?.['max']">Ano máximo permitido: {{ anoAtual }}.</small>
+            </div>
+          </div>
+
+          <!-- Motor -->
+          <div class="col-md-6">
+            <label for="motor" class="form-label required">Motor:</label>
+            <input type="text" class="form-control" formControlName="motor" id="motor" required>
+            <div *ngIf="form.get('motor')?.invalid && form.get('motor')?.touched" class="text-danger">
+              <small *ngIf="form.get('motor')?.errors?.['required']">O motor é obrigatório.</small>
+            </div>
+          </div>
+
+          <!-- Vistoria -->
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" formControlName="vistoriaEntrada" id="vistoriaEntrada">
+              <label class="form-check-label" for="vistoriaEntrada">
+                Vistoria Entrada
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" formControlName="vistoriaSaida" id="vistoriaSaida">
+              <label class="form-check-label" for="vistoriaSaida">
+                Vistoria Saída
+              </label>
+            </div>
+          </div>
+
+          <!-- Situação -->
+          <div class="col-md-12">
+            <label for="situacao" class="form-label required">Situação:</label>
+            <select id="situacao" class="form-select" formControlName="situacao" required>
+              <option value="Estoque/SemDoc">Estoque/SemDoc</option>
+              <option value="Estoque/ComDoc">Estoque/ComDoc</option>
+              <option value="Pré-Venda">Pré-Venda</option>
+              <option value="Venda/SemDoc">Venda/SemDoc</option>
+              <option value="Venda/ComDoc">Venda/ComDoc</option>
+            </select>
+            <div *ngIf="form.get('situacao')?.invalid && form.get('situacao')?.touched" class="text-danger">
+              <small *ngIf="form.get('situacao')?.errors?.['required']">A situação é obrigatória.</small>
+            </div>
+          </div>
+
+          <!-- Descrição -->
+          <div class="col-12">
+            <label for="descricao" class="form-label">Descrição:</label>
+            <textarea class="form-control" formControlName="descricao"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="fechar()">Cancelar</button>
+        <button type="submit" class="btn btn-success" (click)="onSubmit()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>

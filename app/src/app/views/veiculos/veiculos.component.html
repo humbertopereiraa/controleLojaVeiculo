@@ -1,0 +1,12 @@
+<app-datagrid [dataSource]="veiculos" [columns]="columns" [isButtonTask]="true" (add)="abrirPopupEdicao($event)"
+  (edit)="abrirPopupEdicao($event)" (delete)="onDelete($event)" (tarefa)="onTarefa($event)">
+  <ng-template #detailTemplate let-item>
+    <app-timeline [veiculoID]="item?.id"></app-timeline>
+  </ng-template>
+</app-datagrid>
+
+<app-editor-veiculo [isOpen]="isPopupOpen" [veiculo]="veiculoSelecionado" (close)="isPopupOpen = false"
+  (save)="salvarVeiculo($event)">
+</app-editor-veiculo>
+
+<app-tarefa-veiculo [isOpen]="isPopupTarefa" [veiculoID]="veiculoID" (close)="isPopupTarefa = false"></app-tarefa-veiculo>
